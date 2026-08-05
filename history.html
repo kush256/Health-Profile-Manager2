@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health History</title>
+<link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0F6B62">
+    <link rel="icon" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+
+<main>
+
+<header class="top-header">
+    <div class="logo-section">
+        <svg class="pulse-mark" viewBox="0 0 44 30" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 15 H10 L14 4 L20 26 L25 12 L28 18 L32 15 H44" />
+        </svg>
+        <div>
+            <h1>Health History</h1>
+            <p>Every saved chart entry</p>
+        </div>
+    </div>
+    <div class="user-section">
+        <div class="user-info">
+            <span class="welcome">Signed in as</span>
+            <span id="userEmail"></span>
+        </div>
+        <button class="logout-btn" onclick="logout()">Sign out</button>
+    </div>
+</header>
+
+<div class="history-toolbar">
+    <input type="text" id="search" placeholder="Search by name...">
+</div>
+
+<div id="historyContainer"></div>
+
+<div>
+    <button class="clear-all-btn" onclick="clearAllRecords()">Clear all records</button>
+    <button class="back-btn" onclick="window.location.href='index.html'">Back to chart</button>
+</div>
+
+<script type="module" src="firebase.js"></script>
+<script type="module" src="auth.js"></script>
+<script type="module" src="history.js"></script>
+
+</main>
+
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(console.error);
+  });
+}
+</script>
+</body>
+
+</html>

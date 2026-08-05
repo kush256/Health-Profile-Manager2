@@ -1,0 +1,19 @@
+{
+  "name": "health-profile-manager",
+  "version": "1.0.0",
+  "description": "Personal health assessment tool",
+  "type": "module",
+  "scripts": {
+    "build": "echo 'Web app is ready in www/ folder'",
+    "android:build": "cd android && ./gradlew assembleRelease",
+    "android:debug": "cd android && ./gradlew assembleDebug"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/android": "^6.0.0"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.0.0"
+  }
+}

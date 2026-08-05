@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Health Profile Manager</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0F6B62">
+    <link rel="icon" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+  <main>
+
+<!-- ================= HEADER ================= -->
+<header class="top-header">
+
+    <div class="logo-section">
+        <svg class="pulse-mark" viewBox="0 0 44 30" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 15 H10 L14 4 L20 26 L25 12 L28 18 L32 15 H44" />
+        </svg>
+        <div>
+            <h1>Health Profile Manager</h1>
+            <p>Personal Health Assessment Chart</p>
+        </div>
+    </div>
+
+    <div class="user-section">
+        <div class="user-info">
+            <span class="welcome">Signed in as</span>
+            <span id="userEmail"></span>
+        </div>
+        <button class="logout-btn" onclick="logout()">Sign out</button>
+    </div>
+
+</header>
+
+<div class="workspace">
+
+    <!-- ================= FORM PANEL ================= -->
+    <section class="form-panel">
+
+        <div class="panel-card">
+            <div class="section-title">Personal Information</div>
+
+            <div class="field-grid">
+
+                <div class="field">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="Enter your full name">
+                </div>
+
+                <div class="field-grid two-col">
+                    <div class="field">
+                        <label for="dob">Date of Birth <span class="unit">dd/mm/yyyy</span></label>
+                        <input type="date" id="dob" onchange="calculateAge()">
+                    </div>
+
+                    <div class="field">
+                        <label for="age">Age <span class="unit">years</span></label>
+                        <input type="text" id="age" placeholder="Auto-calculated" readonly>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Gender</label>
+                    <div class="gender-box">
+                        <label class="gender-option">
+                            <input type="radio" id="male" name="gender" value="Male">
+                            Male
+                        </label>
+                        <label class="gender-option">
+                            <input type="radio" id="female" name="gender" value="Female">
+                            Female
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="panel-card">
+            <div class="section-title">Health Measurements</div>
+
+            <div class="field-grid two-col">
+                <div class="field">
+                    <label for="weight">Weight <span class="unit">kg</span></label>
+                    <input type="number" id="weight" placeholder="e.g. 68">
+                </div>
+                <div class="field">
+                    <label for="height">Height <span class="unit">cm</span></label>
+                    <input type="number" id="height" placeholder="e.g. 172">
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button class="primary-btn" onclick="calculateBMI()">Generate Health Summary</button>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ================= RESULTS PANEL ================= -->
+    <aside class="results-panel">
+
+        <div class="panel-card gauge-card">
+            <div class="section-title">Vitals Dial <small>BMI · kg/m&sup2;</small></div>
+
+            <div class="gauge-wrap">
+                <svg class="gauge" viewBox="0 0 200 112" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="gaugeGradient" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%"  stop-color="#E0A94A"/>
+                            <stop offset="14%" stop-color="#E0A94A"/>
+                            <stop offset="14%" stop-color="#3E8E5B"/>
+                            <stop offset="40%" stop-color="#3E8E5B"/>
+                            <stop offset="40%" stop-color="#D9822B"/>
+                            <stop offset="60%" stop-color="#D9822B"/>
+                            <stop offset="60%" stop-color="#E2543A"/>
+                            <stop offset="100%" stop-color="#E2543A"/>
+                        </linearGradient>
+                    </defs>
+                    <path class="gauge-track" d="M20,100 A80,80 0 0 1 180,100"/>
+                    <line id="gaugeNeedle" class="gauge-needle" x1="100" y1="100" x2="100" y2="30"/>
+                    <circle cx="100" cy="100" r="5.5" class="gauge-pivot"/>
+                </svg>
+                <div class="gauge-readout">
+                    <span id="bmiValue" class="gauge-number">--</span>
+                    <span id="bmiCategory" class="gauge-category">Awaiting data</span>
+                </div>
+            </div>
+            <div class="gauge-scale"><span>15</span><span>18.5</span><span>25</span><span>30</span><span>40+</span></div>
+
+            <div id="advice" class="advice-box"></div>
+        </div>
+
+        <div class="panel-card">
+            <p id="result"></p>
+            <div id="reading" class="reading-box"></div>
+
+            <div class="secondary-buttons">
+                <button id="saveBtn" onclick="saveProfile()" style="display:none;">Save record</button>
+                <button onclick="window.location.href='history.html'">History</button>
+                <button onclick="resetForm()">Reset</button>
+            </div>
+        </div>
+
+    </aside>
+
+</div>
+
+<p class="print-note">Not a substitute for professional medical advice.</p>
+
+<script type="module" src="firebase.js"></script>
+<script type="module" src="auth.js"></script>
+<script type="module" src="script.js"></script>
+
+</main>
+  
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(console.error);
+  });
+}
+</script>
+</body>
+</html>

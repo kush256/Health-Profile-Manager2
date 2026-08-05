@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account — Health Profile Manager</title>
+<link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0F6B62">
+    <link rel="icon" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+
+<main>
+
+<div class="auth-shell">
+<div class="auth-card">
+
+    <svg class="pulse-mark" viewBox="0 0 44 30" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 15 H10 L14 4 L20 26 L25 12 L28 18 L32 15 H44" />
+    </svg>
+
+    <h1>Create your chart</h1>
+    <p class="auth-sub">Start tracking your health profile</p>
+
+    <input type="email" id="email" placeholder="Email address">
+    <input type="password" id="password" placeholder="Password (min. 6 characters)">
+
+    <button class="primary-btn" onclick="signUp()">Create Account</button>
+
+    <p class="auth-switch">Already have an account? <a href="login.html">Login</a></p>
+
+</div>
+</div>
+
+<script type="module" src="auth.js"></script>
+
+</main>
+
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(console.error);
+  });
+}
+</script>
+</body>
+
+</html>

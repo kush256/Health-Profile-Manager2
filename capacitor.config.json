@@ -1,0 +1,18 @@
+{
+  "appId": "com.healthprofilemanager.app",
+  "appName": "Health Profile Manager",
+  "webDir": ".",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "buildOptions": {
+      "keystorePath": ".keystore",
+      "keystoreAlias": "key0",
+      "keystorePassword": "password",
+      "keystoreAliasPassword": "password",
+      "releaseType": "AAB"
+    }
+  },
+  "plugins": {}
+}

@@ -1,0 +1,34 @@
+# Android build files
+/android/.gradle
+/android/build
+/android/app/build
+/android/local.properties
+/android/*.jks
+/android/*.keystore
+
+# Gradle
+.gradle/
+gradle/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Node modules
+node_modules/
+npm-debug.log
+
+# Build outputs
+*.apk
+*.aab
+*.aar
+
+# Signing
+*.jks
+*.keystore
+key.properties
+keystore.properties
