@@ -26,14 +26,14 @@ const RES = 1.5;                  // backing-store multiplier (1920×1080)
 const DURATION = 14.5;            // loop length in seconds
 
 const SPRITE_FILES = {
-  front: 'sprites/front.png',
-  side: 'sprites/side.png',
-  back: 'sprites/back.png',
-  action: 'sprites/action.png',
-  head_calm: 'sprites/head_calm.png',
-  head_angry: 'sprites/head_angry.png',
-  head_surprised: 'sprites/head_surprised.png',
-  head_grin: 'sprites/head_grin.png',
+  front: '../sprites/front.png',
+  side: '../sprites/side.png',
+  back: '../sprites/back.png',
+  action: '../sprites/action.png',
+  head_calm: '../sprites/head_calm.png',
+  head_angry: '../sprites/head_angry.png',
+  head_surprised: '../sprites/head_surprised.png',
+  head_grin: '../sprites/head_grin.png',
 };
 
 // eye centres in sprite pixels (measured on the cut-out heads)

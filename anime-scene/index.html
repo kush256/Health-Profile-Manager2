@@ -1,11 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Rooftop Strike</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Inter:wght@400;500;600&display=swap">
 <style>
-  /* Layout: a screening-room page — the player is the hero, production notes sit below in two columns.
-     Single dark theme on purpose: it is a cinema screen. */
+  /* Layout: a screening-room page — the player is the hero, production notes sit below.
+     Single dark theme on purpose: it is a cinema screen. Fonts are optional (system fallbacks). */
   :root {
     --bg: #0c0b17;
     --panel: #15142a;
@@ -19,16 +24,16 @@
     color-scheme: dark;
   }
   * { box-sizing: border-box; }
-  html, body { background: var(--bg); color: var(--fg); }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); }
   body {
     font-family: var(--body);
     font-size: 15px;
     line-height: 1.55;
     padding-left: max(16px, env(safe-area-inset-left, 0px));
     padding-right: max(16px, env(safe-area-inset-right, 0px));
-    padding-block: 28px 48px;
+    padding-block: 24px 48px;
   }
-  .wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 28px; }
+  .wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 22px; }
   header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; }
   h1 {
     font-family: var(--display); font-weight: 700; font-size: clamp(26px, 4vw, 38px);
@@ -43,20 +48,20 @@
     display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px;
     padding: 12px 14px; background: var(--panel); border-top: 1px solid var(--line);
   }
-  button {
-    font-family: var(--display); font-weight: 700; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase;
+  button, select {
+    font-family: var(--display); font-weight: 700; font-size: 14px; letter-spacing: 0.08em;
     color: var(--fg); background: var(--navy); border: 1px solid #3a4890; border-radius: 4px;
-    padding: 8px 16px; min-width: 96px; cursor: pointer;
+    padding: 8px 14px; cursor: pointer;
   }
-  button:hover { border-color: var(--accent); }
-  button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { min-width: 96px; text-transform: uppercase; }
+  select { flex: 1 1 260px; min-width: 0; text-transform: none; letter-spacing: 0.02em; }
+  button:hover, select:hover { border-color: var(--accent); }
+  button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   #btn-play { background: var(--accent); border-color: var(--accent); color: #1a0a06; }
-  #scrub { flex: 1 1 220px; min-width: 0; accent-color: var(--accent); }
+  #scrub { flex: 1 1 100%; min-width: 0; accent-color: var(--accent); }
   #clock { font-family: var(--display); font-variant-numeric: tabular-nums; color: var(--muted); font-size: 14px; }
-  #shot {
-    flex-basis: 100%; font-family: var(--display); font-size: 13px; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--accent); min-height: 1.2em;
-  }
+  #shot { font-family: var(--display); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+  .kbd { font-family: var(--display); font-size: 12px; color: var(--muted); }
 
   .notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; }
   .notes > section { min-width: 0; }
@@ -66,63 +71,58 @@
   }
   p { margin: 0 0 10px; max-width: 65ch; }
   ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
-  ol li { display: grid; grid-template-columns: 92px 1fr; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+  ol li { display: grid; grid-template-columns: 84px 1fr; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
   .tc { font-family: var(--display); font-variant-numeric: tabular-nums; color: var(--accent); }
-  .layers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-  .layers figure { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 8px; display: grid; gap: 4px; justify-items: center; }
-  .layers img { height: 92px; width: auto; max-width: 100%; object-fit: contain; }
-  .layers figcaption { font-size: 11px; color: var(--muted); font-family: var(--display); letter-spacing: 0.06em; }
-  .kbd { font-family: var(--display); font-size: 12px; color: var(--muted); }
-  @media (max-width: 520px) { .layers { grid-template-columns: repeat(2, 1fr); } }
 </style>
-
+</head>
+<body>
 <div class="wrap">
   <header>
     <h1>Rooftop <span>Strike</span></h1>
-    <div class="meta">14.5s loop · 7 shots · 8 cutout layers</div>
+    <div class="meta">Cutout rig · 24 fps animation · 15 s sequence + move library</div>
   </header>
 
   <div class="player">
-    <canvas id="stage" width="1920" height="1080" aria-label="Animated anime scene: the hero on a rooftop at dusk sees an energy orb, dashes, leaps and punches it, then grins."></canvas>
+    <canvas id="stage" width="1920" height="1080" aria-label="Animated anime scene: the hero idles on a rooftop, reacts to an incoming energy orb, takes a fighting stance, winds up and punches it, recovers, and turns to camera with a smirk."></canvas>
     <div class="controls">
       <button id="btn-play" type="button" aria-pressed="false">Pause</button>
       <button id="btn-restart" type="button">Restart</button>
-      <input id="scrub" type="range" min="0" max="14.5" step="0.01" value="0" aria-label="Timeline">
-      <span id="clock">00.0s / 14.5s</span>
-      <span id="shot">Loading layers…</span>
+      <select id="clip" aria-label="Clip"></select>
+      <span id="clock">00.00s</span>
+      <span id="shot">Loading…</span>
+      <input id="scrub" type="range" min="0" max="15" step="0.001" value="0" aria-label="Timeline">
     </div>
   </div>
-  <div class="kbd">Space: play / pause · R: restart · drag the timeline to scrub</div>
+  <div class="kbd">Space: play / pause · R: restart · , and . : step one animation frame · drag the timeline to scrub</div>
 
   <div class="notes">
     <section>
-      <h2>Shot list</h2>
+      <h2>Sequence</h2>
       <ol>
-        <li><span class="tc">00.0–03.0</span><span>Wide, rooftop at dusk. Slow push-in, breathing and body sway, an energy orb streaks in.</span></li>
-        <li><span class="tc">03.0–04.6</span><span>Close-up. Calm face with a blink and hair in the wind, snap zoom to surprise.</span></li>
-        <li><span class="tc">04.6–05.8</span><span>Extreme close-up on the angry eyes, focus lines and red rim light.</span></li>
-        <li><span class="tc">05.8–07.4</span><span>Tracking dash in side view with afterimages and speed streaks.</span></li>
-        <li><span class="tc">07.4–10.0</span><span>Leap at the lens, inverted impact frames, shockwave and debris in slow motion.</span></li>
-        <li><span class="tc">10.0–12.0</span><span>Back view on the rooftop as the smoke clears.</span></li>
-        <li><span class="tc">12.0–14.5</span><span>Close-up grin with a blink, then the end card.</span></li>
+        <li><span class="tc">00–02 s</span><span>Idle: breathing, weight shift, blinks, eyes find the threat.</span></li>
+        <li><span class="tc">02–04 s</span><span>Reaction: head snaps round, brows drop, rear foot steps back, guard rises, body turns side-on.</span></li>
+        <li><span class="tc">04–06 s</span><span>Fighting stance: bent knees, weight rocking front and back, fists breathing.</span></li>
+        <li><span class="tc">06–08 s</span><span>Preparation: weight onto the rear leg, punching arm draws back, hips and shoulders coil.</span></li>
+        <li><span class="tc">08–09 s</span><span>Punch: hips and shoulders rotate, rear heel pivots, fist travels an arc, smear frames.</span></li>
+        <li><span class="tc">09–10 s</span><span>Impact: hit-stop, two inverted impact frames, squash, shockwave.</span></li>
+        <li><span class="tc">10–12 s</span><span>Follow-through, arm retracts, balance step, heavy breathing.</span></li>
+        <li><span class="tc">12–15 s</span><span>Turns to camera in guard, slow head turn, smirk, breathing settles.</span></li>
       </ol>
     </section>
     <section>
       <h2>How it is animated</h2>
-      <p>Every frame uses the original artwork cut from the reference sheet. Nothing about the character is redrawn with shapes.</p>
-      <p>The sheet is a set of flat drawings, not a rigged puppet, so limbs cannot bend. Movement comes from swapping between the drawn poses and expressions, warping the bitmap in thin strips for breathing, sway and hair, painting blinks over the eyes, and from camera work and effects.</p>
-      <div class="layers">
-        <figure><img src="sprites/front.png" alt="Front view"><figcaption>front</figcaption></figure>
-        <figure><img src="sprites/side.png" alt="Side view"><figcaption>side</figcaption></figure>
-        <figure><img src="sprites/back.png" alt="Back view"><figcaption>back</figcaption></figure>
-        <figure><img src="sprites/action.png" alt="Action pose"><figcaption>action</figcaption></figure>
-        <figure><img src="sprites/head_calm.png" alt="Calm face"><figcaption>calm</figcaption></figure>
-        <figure><img src="sprites/head_surprised.png" alt="Surprised face"><figcaption>surprised</figcaption></figure>
-        <figure><img src="sprites/head_angry.png" alt="Angry face"><figcaption>angry</figcaption></figure>
-        <figure><img src="sprites/head_grin.png" alt="Grinning face"><figcaption>grin</figcaption></figure>
-      </div>
+      <p>The front and side drawings from the reference sheet are cut into a jointed puppet: head, torso, upper arms, forearms, fists, thighs, shins and feet, each with a round cap at its joint so nothing gaps when it rotates.</p>
+      <p>Arms and legs are solved with two-bone inverse kinematics, so planted feet stay locked to the floor and the fist follows a curved path. Hair, the head and the arm smears read the pose history to trail behind the motion.</p>
+      <p>Pick a clip from the menu to see each mechanic on its own: idle, head movement, expressions, walk, run, jump, punch, block, dodge, duck and hit recoil.</p>
     </section>
   </div>
 </div>
 
-<script src="scene.js"></script>
+<script src="js/world.js"></script>
+<script src="rig-data.js"></script>
+<script src="js/rig.js"></script>
+<script src="js/anim.js"></script>
+<script src="js/clips.js"></script>
+<script src="js/player.js"></script>
+</body>
+</html>

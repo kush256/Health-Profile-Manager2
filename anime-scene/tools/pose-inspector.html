@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pose inspector</title>
+<style>body{margin:0;background:#2a2840}canvas{display:block;width:100%;height:auto}</style>
+</head>
+<body>
+<!-- Development tool: shows the puppet in test poses so cuts and joints can be checked. -->
+<canvas id="c"></canvas>
+<script src="../js/world.js"></script>
+<script src="../rig-data.js"></script>
+<script>
+  // pieces are listed relative to the project root; this page lives in tools/
+  for (const r of Object.values(RIG_DATA)) for (const p of Object.values(r.pieces)) p.src = '../' + p.src;
+</script>
+<script src="../js/rig.js"></script>
+<script>for (const k in BASE_SPRITES) BASE_SPRITES[k] = '../' + BASE_SPRITES[k];</script>
+<script src="../js/anim.js"></script>
+<script>
+const c = document.getElementById('c');
+c.width = W * RES; c.height = H * RES;
+const ctx = c.getContext('2d');
+const G = 640, s = 0.55;
+const noSec = { hair: 0, headLag: 0, time: 0 };
+function sidePose(gx, opts) {
+  const st = sideStance(gx, G, s, opts.stance || {});
+  const p = basePose('side');
+  p.x = st.pelvis[0]; p.y = st.pelvis[1]; p.s = s;
+  p.legs = { n: st.n, f: st.f };
+  return Object.assign(p, opts.p || {});
+}
+function frontPose(gx, drop, arms, hands) {
+  const p = basePose('front');
+  p.s = s; p.x = gx; p.y = G - s * (FRONT_LEG - drop);
+  p.legs = { l: { x: gx + s * (FRONT_SOLE.l - 10), y: G }, r: { x: gx + s * (FRONT_SOLE.r + 10), y: G } };
+  p.arms = arms; p.hands = hands || {}; p.expr.head = 'smirk';
+  return p;
+}
+window.drawPoses = function () {
+  ctx.setTransform(RES, 0, 0, RES, 0, 0);
+  ctx.fillStyle = '#3a3858'; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#222'; ctx.fillRect(0, G, W, 80);
+  const poses = [
+    (() => { const p = basePose('side'); p.s = s; p.x = 110; p.y = G - s * SIDE_LEG + 2; p.legs = { n: { x: 110 + s * SIDE_BALL, y: G, roll: 0 }, f: { x: 110 + s * SIDE_BALL - 4, y: G, roll: 0 } }; p.arms = { n: { fk: [0, 0] }, f: { fk: [0, 0] } }; return p; })(),
+    sidePose(330, { p: { arms: { n: { ik: GUARD_SIDE.n }, f: { ik: GUARD_SIDE.f } }, hands: { n: 1, f: 1 } } }),
+    sidePose(560, { stance: { drop: 45 }, p: { rot: -0.12, twist: 1, arms: { n: { ik: [-300, -30] }, f: { ik: [-80, -110] } }, hands: { n: 1, f: 1 }, stretch: 0.06 } }),
+    sidePose(800, { stance: { drop: 110, width: 0.8 }, p: { rot: -0.3, arms: { n: { fk: [-0.9, 0.6] }, f: { fk: [-1.1, 0.4] } } } }),
+    frontPose(940, 4, { l: { fk: [0, 0] }, r: { fk: [0, 0] } }),
+    frontPose(1140, 30, { l: { ik: GUARD_FRONT.l, fs: 0.55 }, r: { ik: GUARD_FRONT.r, fs: 0.55 } }, { l: 1, r: 1 }),
+  ];
+  for (const p of poses) drawCharacter(ctx, p, noSec, { grade: 0, rimAlpha: 0 });
+};
+loadAllImages().then(() => { drawPoses(); document.title = 'ready'; }).catch(e => { document.title = 'error ' + e.message; });
+</script>
+</body>
+</html>
