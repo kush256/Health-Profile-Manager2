@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stomu Motion Test 01</title>
+<style>
+  :root { --bg:#1b1414; --fg:#f3e6e2; --mut:#b9a29c; --acc:#ea8e91; }
+  html,body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.4 system-ui, sans-serif; }
+  .wrap { display:flex; flex-direction:column; align-items:center; gap:10px; padding:12px 16px; }
+  canvas { height:min(78vh, 1280px); max-width:100%; aspect-ratio:9/16; background:#000; border-radius:8px; }
+  .bar { display:flex; gap:10px; align-items:center; width:min(100%, 720px); }
+  input[type=range] { flex:1; accent-color:var(--acc); }
+  button { background:var(--acc); color:#2a1212; border:0; border-radius:6px; padding:6px 14px; font-weight:700; cursor:pointer; }
+  label { color:var(--mut); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <canvas id="c" width="1080" height="1920"></canvas>
+  <div class="bar">
+    <button id="play">Pause</button>
+    <input id="scrub" type="range" min="0" max="300" value="0">
+    <span id="tc">f000</span>
+    <label><input id="slate" type="checkbox" checked> slate</label>
+  </div>
+  <audio id="aud" src="output/mix.wav" preload="auto"></audio>
+</div>
+<script src="src/rig.js"></script>
+<script src="src/lipsync.js"></script>
+<script src="src/characters.js"></script>
+<script src="src/timeline.js"></script>
+<script>
+  // Interactive preview (frame-accurate scrubbing). The offline renderer uses the same renderFrame().
+  const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+  const S = window.SCENE;
+  window.renderAt = (f, slate = true) => S.renderFrame(ctx, f / S.FPS, { slate });
+  if (!new URLSearchParams(location.search).has('render')) {
+    let playing = true, t0 = performance.now(), f = 0;
+    const scrub = document.getElementById('scrub'), tc = document.getElementById('tc'), aud = document.getElementById('aud');
+    const slate = document.getElementById('slate');
+    const draw = () => { renderAt(f, slate.checked); scrub.value = f; tc.textContent = 'f' + String(f).padStart(3, '0'); };
+    const loop = now => {
+      if (playing) { f = Math.floor(((now - t0) / 1000 * S.FPS)) % (S.DUR * S.FPS); if (f === 0 && aud.readyState) { aud.currentTime = 0; } }
+      draw(); requestAnimationFrame(loop);
+    };
+    document.getElementById('play').onclick = e => {
+      playing = !playing; e.target.textContent = playing ? 'Pause' : 'Play';
+      if (playing) { t0 = performance.now() - f / S.FPS * 1000; aud.currentTime = f / S.FPS; aud.play().catch(() => {}); } else aud.pause();
+    };
+    scrub.oninput = () => { playing = false; document.getElementById('play').textContent = 'Play'; aud.pause(); f = +scrub.value; };
+    requestAnimationFrame(loop);
+  }
+</script>
+</body>
+</html>
